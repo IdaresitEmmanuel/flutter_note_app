@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:note_app/controllers/notes_page_controller.dart';
 import 'package:note_app/theme/colors.dart';
 import 'package:note_app/theme/dimensions.dart';
 import 'package:note_app/views/edit_note_page/edit_note_page.dart';
@@ -14,58 +16,79 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  bool actionMode = false;
-  toggleActionMode() {
-    setState(() {
-      actionMode = !actionMode;
-    });
-  }
+  final stateController = NotesPageController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const EditNotePage())),
-          child: const Icon(Icons.add),
-        ),
-        body: SafeArea(
-          child: Column(children: [
-            Container(
-              width: double.maxFinite,
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppDimentions.pageMargin, vertical: 10.0),
-              child: Row(
-                children: [
-                  actionMode
-                      ? InkResponse(
-                          onTap: () {},
-                          radius: 20.0,
-                          child: Icon(
-                            Icons.chevron_left_rounded,
-                            color: AppColors.primaryColor,
-                          ))
-                      : const SizedBox.shrink(),
-                  actionMode
-                      ? const SizedBox(width: 10.0)
-                      : const SizedBox.shrink(),
-                  Text(
-                    "My Notes",
-                    style: TextStyle(fontSize: AppDimentions.bodyTextLarge),
-                  ),
-                ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+          floatingActionButton: Obx(() => stateController.actionMode.value
+              ? const SizedBox.shrink()
+              : FloatingActionButton(
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => EditNotePage(
+                              refresh: stateController.refreshNotes))),
+                  child: const Icon(Icons.add),
+                )),
+          body: SafeArea(
+            child: Column(children: [
+              Container(
+                width: double.maxFinite,
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppDimentions.pageMargin, vertical: 10.0),
+                child: Row(
+                  children: [
+                    Obx(() => stateController.actionMode.value
+                        ? InkResponse(
+                            onTap: () => stateController.toggleActionMode(),
+                            radius: 20.0,
+                            child: Icon(
+                              Icons.chevron_left_rounded,
+                              color: AppColors.primaryColor,
+                            ))
+                        : const SizedBox.shrink()),
+                    Obx(() => stateController.actionMode.value
+                        ? const SizedBox(width: 10.0)
+                        : const SizedBox.shrink()),
+                    Text(
+                      "My Notes",
+                      style: TextStyle(fontSize: AppDimentions.bodyTextLarge),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            actionMode ? const ActionBar() : const SearchBar(),
-            ListView.builder(
-                padding:
-                    EdgeInsets.symmetric(horizontal: AppDimentions.pageMargin),
-                shrinkWrap: true,
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return NoteItem(isActionMode: actionMode);
-                })
-          ]),
-        ));
+              Obx(() => stateController.actionMode.value
+                  ? Obx(() {
+                      return ActionBar(
+                        selectedList: stateController.noteList
+                            .where((p0) => p0.isSelected.value)
+                            .toList(),
+                        controller: stateController,
+                      );
+                    })
+                  : const SearchBar()),
+              Expanded(
+                child: stateController.obx((noteList) {
+                  return ListView.builder(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppDimentions.pageMargin),
+                      shrinkWrap: true,
+                      itemCount: noteList?.length,
+                      itemBuilder: (context, index) {
+                        return Obx(() {
+                          return NoteItem(
+                              note: stateController.noteList[index],
+                              isActionMode: stateController.actionMode.value,
+                              stateController: stateController);
+                        });
+                      });
+                }),
+              )
+            ]),
+          )),
+    );
   }
 }

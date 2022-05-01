@@ -4,6 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:note_app/views/core/app_widget.dart';
 
 void main() {
+  if (kIsWeb) {
+    // sqfliteWindowsFfiInit();
+  }
   // font license
   LicenseRegistry.addLicense(() async* {
     final license = await rootBundle.loadString('assets/fonts/OFL.txt');
