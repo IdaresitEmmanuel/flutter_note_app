@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
-import 'package:note_app/constants/enums.dart';
-import 'package:note_app/controllers/edit_page_controller.dart';
+import 'package:note_app/core/constants/enums.dart';
+import 'package:note_app/views/edit_note_page/edit_page_controller.dart';
 
 import 'check_box.dart';
 
@@ -29,8 +29,7 @@ class _TagDialogState extends State<TagDialog> {
               const Text("Tag", style: TextStyle(fontSize: 16.0)),
               ListTile(
                 onTap: () {
-                  controller.note.value =
-                      controller.note.value.copyWith(tag: NoteTag.none);
+                  controller.editTag(NoteTag.none);
                 },
                 leading: const Icon(
                   Icons.block_rounded,
@@ -42,8 +41,7 @@ class _TagDialogState extends State<TagDialog> {
               ),
               ListTile(
                 onTap: () {
-                  controller.note.value =
-                      controller.note.value.copyWith(tag: NoteTag.home);
+                  controller.editTag(NoteTag.home);
                 },
                 leading: const Icon(Icons.home_rounded),
                 title: const Text("Home"),
@@ -53,8 +51,7 @@ class _TagDialogState extends State<TagDialog> {
               ),
               ListTile(
                 onTap: () {
-                  controller.note.value =
-                      controller.note.value.copyWith(tag: NoteTag.work);
+                  controller.editTag(NoteTag.work);
                 },
                 leading: const Icon(Icons.work_rounded),
                 title: const Text("Work"),
@@ -64,8 +61,7 @@ class _TagDialogState extends State<TagDialog> {
               ),
               ListTile(
                 onTap: () {
-                  controller.note.value =
-                      controller.note.value.copyWith(tag: NoteTag.school);
+                  controller.editTag(NoteTag.school);
                 },
                 leading: const Icon(Icons.school_rounded),
                 title: const Text("School"),

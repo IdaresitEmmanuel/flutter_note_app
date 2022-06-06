@@ -1,4 +1,4 @@
-import 'package:note_app/repositories/note.dart';
+import 'package:note_app/data/repositories/note.dart';
 // import 'package:note_app/repositories/note_db_provider.dart';
 
 class EditPageModel {

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
-import 'package:note_app/controllers/edit_page_controller.dart';
+import 'package:note_app/core/helper_function.dart';
+import 'package:note_app/views/edit_note_page/edit_page_controller.dart';
 import 'package:note_app/theme/colors.dart';
 import 'package:note_app/views/edit_note_page/widgets/add_reminder_dialog.dart';
 import 'package:note_app/views/edit_note_page/widgets/tag_dialog.dart';
@@ -16,12 +17,24 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
   var controller = Get.find<EditPageController>();
   List<Widget> getColorWidgetList() {
     return AppColors.noteColorList
-        .map((e) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 3.0),
-              width: 40.0,
-              height: 40.0,
-              decoration: BoxDecoration(
-                  color: e, borderRadius: BorderRadius.circular(20)),
+        .map((e) => GestureDetector(
+              onTap: () => controller.editColor(e),
+              child: Obx(() {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 6.0),
+                  width: 40.0,
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                      border: toColor(controller.note.value.color) == e
+                          ? Border.all(width: 2, color: AppColors.primaryColor)
+                          : null,
+                      color: e,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: toColor(controller.note.value.color) == e
+                      ? Icon(Icons.check_rounded, color: AppColors.primaryColor)
+                      : const SizedBox.shrink(),
+                );
+              }),
             ))
         .toList();
   }

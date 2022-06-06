@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:note_app/constants/enums.dart';
-import 'package:note_app/controllers/edit_page_controller.dart';
+import 'package:note_app/core/constants/enums.dart';
+import 'package:note_app/views/edit_note_page/edit_page_controller.dart';
 import 'package:note_app/core/helper_function.dart';
-import 'package:note_app/repositories/note.dart';
+import 'package:note_app/data/repositories/note.dart';
 import 'package:note_app/theme/colors.dart';
 import 'package:note_app/theme/dimensions.dart';
 import 'package:note_app/views/edit_note_page/widgets/options_bottom_sheet.dart';
@@ -22,7 +22,9 @@ class _EditNotePageState extends State<EditNotePage> {
   final titleController = TextEditingController();
   @override
   void initState() {
-    controller.setNote(widget.note!);
+    if (widget.note != null) {
+      controller.setNote(widget.note!);
+    }
     super.initState();
   }
 
@@ -55,9 +57,11 @@ class _EditNotePageState extends State<EditNotePage> {
                       Obx(() {
                         return controller.editMode.value
                             ? InkResponse(
-                                onTap: () {
+                                onTap: () async {
                                   FocusScope.of(context).unfocus();
-                                  controller.saveNote();
+                                  final result = await controller.saveNote();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(result)));
                                 },
                                 radius: 20.0,
                                 child: Icon(Icons.check,

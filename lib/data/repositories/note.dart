@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:get/get.dart';
 
-import 'package:note_app/constants/enums.dart';
+import 'package:note_app/core/constants/enums.dart';
 
 class Note {
   int? id;

@@ -1,4 +1,4 @@
-import 'package:note_app/repositories/note.dart';
+import 'package:note_app/data/repositories/note.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,11 +8,13 @@ class NoteDBProvider {
   final titleColumn = 'title';
   final dateColumn = 'date';
   final noteColumn = 'note';
+  final colorColumn = 'color';
+  final tagColumn = 'tag';
 
   // note_table
-  // _id  | title | date |  note  |
-  //  ''      ''     ''      ''
-  //  ''      ''     ''      ''
+  // _id  | title | date |  note  | color | tag
+  //  ''      ''     ''      ''      ''     ''
+  //  ''      ''     ''      ''      ''     ''
 
   static final NoteDBProvider instance = NoteDBProvider._instance();
   NoteDBProvider._instance();
@@ -27,12 +29,13 @@ class NoteDBProvider {
   Future<Database> initDB(String filePath) async {
     var dbPath = await getDatabasesPath();
     var path = join(dbPath, filePath);
-    return await openDatabase(path, version: 2, onCreate: createDB);
+    return await openDatabase(path, version: 1, onCreate: createDB);
   }
 
   Future createDB(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE $tableName ($idColumn INTEGER PRIMARY KEY AUTOINCREMENT, $titleColumn TEXT, $dateColumn TEXT, $noteColumn TEXT)');
+      'CREATE TABLE $tableName ($idColumn INTEGER PRIMARY KEY AUTOINCREMENT, $titleColumn TEXT, $dateColumn INTEGER, $noteColumn TEXT, $colorColumn TEXT, $tagColumn TEXT)',
+    );
   }
 
   Future<List<Note>> getAllNotes() async {
