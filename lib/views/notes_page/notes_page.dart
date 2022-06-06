@@ -79,10 +79,31 @@ class _NotesPageState extends State<NotesPage> {
                       itemCount: noteList?.length,
                       itemBuilder: (context, index) {
                         return Obx(() {
+                          final note = stateController.noteList[index];
                           return NoteItem(
-                              note: stateController.noteList[index],
-                              isActionMode: stateController.actionMode.value,
-                              stateController: stateController);
+                            note: stateController.noteList[index],
+                            isActionMode: stateController.actionMode.value,
+                            stateController: stateController,
+                            onPress: () {
+                              if (stateController.actionMode.value) {
+                                note.isSelected.value = !note.isSelected.value;
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => EditNotePage(
+                                      note: note,
+                                      refresh: stateController.refreshNotes,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            onLongPress: () {
+                              note.isSelected.value = true;
+                              stateController.toggleActionMode();
+                            },
+                          );
                         });
                       });
                 }),

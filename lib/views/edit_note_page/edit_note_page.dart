@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:note_app/constants/enums.dart';
 import 'package:note_app/controllers/edit_page_controller.dart';
+import 'package:note_app/core/helper_function.dart';
 import 'package:note_app/repositories/note.dart';
 import 'package:note_app/theme/colors.dart';
 import 'package:note_app/theme/dimensions.dart';
+import 'package:note_app/views/edit_note_page/widgets/options_bottom_sheet.dart';
 
 class EditNotePage extends StatefulWidget {
   const EditNotePage({Key? key, this.note, required this.refresh})
@@ -15,10 +18,11 @@ class EditNotePage extends StatefulWidget {
 }
 
 class _EditNotePageState extends State<EditNotePage> {
-  late final controller = EditPageController(widget.note);
+  final EditPageController controller = Get.find<EditPageController>();
   final titleController = TextEditingController();
   @override
   void initState() {
+    controller.setNote(widget.note!);
     super.initState();
   }
 
@@ -48,21 +52,6 @@ class _EditNotePageState extends State<EditNotePage> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          InkResponse(
-                            onTap: () => Navigator.maybePop(context),
-                            radius: 20.0,
-                            child: Icon(Icons.chevron_left_rounded,
-                                color: AppColors.primaryColor),
-                          ),
-                          const SizedBox(width: 10.0),
-                          Text("Note",
-                              style: TextStyle(
-                                  fontSize: AppDimentions.bodyTextMedium,
-                                  fontWeight: FontWeight.w500)),
-                        ],
-                      ),
                       Obx(() {
                         return controller.editMode.value
                             ? InkResponse(
@@ -74,40 +63,73 @@ class _EditNotePageState extends State<EditNotePage> {
                                 child: Icon(Icons.check,
                                     color: AppColors.primaryColor),
                               )
-                            : PopupMenuButton(
-                                onSelected: (value) =>
-                                    Navigator.maybePop(context),
-                                padding: const EdgeInsets.all(0),
-                                icon: Icon(Icons.more_vert_rounded,
+                            : InkResponse(
+                                onTap: () => Navigator.maybePop(context),
+                                radius: 20.0,
+                                child: Icon(Icons.chevron_left_rounded,
                                     color: AppColors.primaryColor),
-                                itemBuilder: (c) {
-                                  return [
-                                    PopupMenuItem(
-                                        onTap: () {
-                                          controller.deleteNote();
-                                          widget.refresh();
-                                          Navigator.pop(context);
-                                        },
-                                        height: 20,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0),
-                                        child: const Text('Delete'))
-                                  ];
-                                });
+                              );
                       }),
+                      Row(
+                        children: [
+                          const SizedBox(width: 10.0),
+                          Text("Note",
+                              style: TextStyle(
+                                  fontSize: AppDimentions.bodyTextMedium,
+                                  fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                      InkResponse(
+                        radius: 20.0,
+                        onTap: () {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return const OptionsBottomSheet();
+                              });
+                        },
+                        child: Icon(Icons.more_vert_rounded,
+                            color: AppColors.primaryColor),
+                      )
                     ]),
               ),
               Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: AppDimentions.pageMargin),
-                  width: double.maxFinite,
-                  child: const Text(
-                    "Jan 20th 2020 03:04 PM",
-                    style: TextStyle(fontSize: 12.0, color: Color(0xFF807E7E)),
-                  )),
+                height: 40.0,
+                margin:
+                    EdgeInsets.symmetric(horizontal: AppDimentions.pageMargin),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      controller.note.value.date.toString(),
+                      style: const TextStyle(
+                          fontSize: 12.0, color: Color(0xFF807E7E)),
+                    ),
+                    Obx(() {
+                      return controller.note.value.tag != NoteTag.none
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 4.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  color: AppColors.cardColor),
+                              child: Row(children: [
+                                Icon(
+                                  toIconData(controller.note.value.tag),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 10.0),
+                                Text(controller.note.value.tag.name)
+                              ]),
+                            )
+                          : const SizedBox.shrink();
+                    })
+                  ],
+                ),
+              ),
               Expanded(
-                  child:
-                      NoteForm(note: controller.note!, controller: controller))
+                  child: NoteForm(
+                      note: controller.note.value, controller: controller))
             ],
           )),
         ),

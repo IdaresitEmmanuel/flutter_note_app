@@ -1,33 +1,32 @@
 import 'package:get/get.dart';
-import 'package:note_app/models/edit_page_model.dart';
 import 'package:note_app/repositories/note.dart';
 import 'package:note_app/repositories/note_db_provider.dart';
 
 class EditPageController extends GetxController {
-  final model = EditPageModel();
   var editMode = true.obs;
-  Note? note;
-  EditPageController(this.note) {
-    note ??= Note.empty();
+  var note = Note.empty().obs;
+
+  setNote(Note note) {
+    this.note.value = note;
   }
 
   editTitle(String value) {
-    note = note!.copyWith(title: value);
+    note.value.copyWith(title: value);
   }
 
   editNote(String value) {
-    note = note!.copyWith(note: value);
+    note.value.copyWith(note: value);
   }
 
   saveNote() async {
     try {
-      final result = note!.id == null
-          ? await NoteDBProvider.instance.addNote(note!)
-          : await NoteDBProvider.instance.updateNote(note!);
+      final result = note.value.id == null
+          ? await NoteDBProvider.instance.addNote(note.value)
+          : await NoteDBProvider.instance.updateNote(note.value);
       editMode.value = !result;
-      if (note!.id == null) {
+      if (note.value.id == null) {
         NoteDBProvider.instance.getAllNotes().then((value) {
-          note = note!.copyWith(id: value.last.id);
+          note.value.copyWith(id: value.last.id);
         });
       }
     } catch (e) {
@@ -35,7 +34,7 @@ class EditPageController extends GetxController {
     }
   }
 
-  deleteNote() => NoteDBProvider.instance.deleteNote(note!);
+  deleteNote() => NoteDBProvider.instance.deleteNote(note.value);
 
   activateEditing() {
     editMode.value = true;
