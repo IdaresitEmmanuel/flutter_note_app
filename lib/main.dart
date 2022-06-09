@@ -6,6 +6,7 @@ import 'package:note_app/views/core/app_widget.dart';
 
 void main() {
   dependency.init();
+
   if (kIsWeb) {
     // sqfliteWindowsFfiInit();
   }

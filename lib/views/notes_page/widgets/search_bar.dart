@@ -56,11 +56,12 @@ class SearchBarState extends State<SearchBar> {
                         return value
                             ? Material(
                                 child: InkResponse(
-                                    onTap: () {
-                                      textEditingController.clear();
-                                      closeNotifier.value = false;
-                                    },
-                                    child: const Icon(Icons.close_rounded)),
+                                  onTap: () {
+                                    textEditingController.clear();
+                                    closeNotifier.value = false;
+                                  },
+                                  child: const Icon(Icons.close_rounded),
+                                ),
                               )
                             : const SizedBox.shrink();
                       })

@@ -105,7 +105,7 @@ class _EditNotePageState extends State<EditNotePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      controller.note.value.date.toString(),
+                      controller.note.value.getFormattedDate(),
                       style: const TextStyle(
                           fontSize: 12.0, color: Color(0xFF807E7E)),
                     ),
@@ -131,15 +131,51 @@ class _EditNotePageState extends State<EditNotePage> {
                   ],
                 ),
               ),
+              Obx(() {
+                return getReminderWidget(controller.note.value);
+              }),
               Expanded(
-                  child: NoteForm(
-                      note: controller.note.value, controller: controller))
+                child: NoteForm(
+                    note: controller.note.value, controller: controller),
+              )
             ],
           )),
         ),
       ),
     );
   }
+}
+
+Widget getReminderWidget(Note note) {
+  Color color = note.getReminderTextColor();
+  return note.reminderStatus == NoteReminder.none
+      ? const SizedBox()
+      : Container(
+          margin: EdgeInsets.symmetric(horizontal: AppDimentions.pageMargin),
+          child: Row(children: [
+            Icon(
+              Icons.notifications_active_rounded,
+              size: 14,
+              color: color,
+            ),
+            const SizedBox(width: 5.0),
+            Text(
+              note.getFormattedReminderDate(),
+              style: TextStyle(
+                fontSize: 10.0,
+                color: color,
+              ),
+            ),
+            const SizedBox(width: 5.0),
+            Text(
+              note.isReminderActive() ? "(Active)" : "(Expired)",
+              style: TextStyle(
+                fontSize: 10.0,
+                color: color,
+              ),
+            )
+          ]),
+        );
 }
 
 class NoteForm extends StatelessWidget {

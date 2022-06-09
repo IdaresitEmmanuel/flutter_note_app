@@ -32,6 +32,11 @@ class EditPageController extends GetxController {
     saveNote();
   }
 
+  setReminderDate(DateTime date) {
+    note.value.reminderDate = date;
+    saveNote();
+  }
+
   Future<String> saveNote() async {
     String tempString = "";
     try {

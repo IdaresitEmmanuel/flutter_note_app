@@ -64,18 +64,20 @@ class _NoteItemState extends State<NoteItem> {
                           ),
                           const SizedBox(height: 6.0),
                           Text(
-                            widget.note.date.toString(),
+                            widget.note.getFormattedDate(),
                             style: const TextStyle(
                                 fontSize: 10.0, color: Color(0xFF807E7E)),
                           ),
                           const SizedBox(height: 10.0),
                           Text(
-                            widget.note.note,
+                            note.note,
                             style: const TextStyle(
                                 fontSize: 14.0, color: Color(0xFF464646)),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
-                          )
+                          ),
+                          const SizedBox(height: 10.0),
+                          getReminderWidget(note)
                         ]),
                   ),
                   note.tag == NoteTag.none
@@ -102,4 +104,26 @@ class _NoteItemState extends State<NoteItem> {
       ),
     );
   }
+}
+
+Widget getReminderWidget(Note note) {
+  return note.reminderStatus != NoteReminder.some
+      ? const SizedBox.shrink()
+      : Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.circular(20)),
+              child: Row(
+                children: [
+                  const Icon(Icons.notifications_active_rounded, size: 14),
+                  Text(note.getFormattedDate(),
+                      style: const TextStyle(fontSize: 10))
+                ],
+              ),
+            )
+          ],
+        );
 }

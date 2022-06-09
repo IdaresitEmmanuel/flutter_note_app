@@ -41,75 +41,84 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          color: Color.fromRGBO(255, 255, 255, 1),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-            height: 8.0,
-            width: 60,
-            decoration: BoxDecoration(
-                color: AppColors.dividerColor,
-                borderRadius: BorderRadius.circular(4.0)),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          constraints: const BoxConstraints(maxWidth: 500.0, minWidth: 300),
+          decoration: const BoxDecoration(
+              color: Color.fromRGBO(255, 255, 255, 1),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+                height: 8.0,
+                width: 60,
+                decoration: BoxDecoration(
+                    color: AppColors.dividerColor,
+                    borderRadius: BorderRadius.circular(4.0)),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: getColorWidgetList(),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context, rootNavigator: false).pop();
+                  controller.deleteNote();
+                  Navigator.pop(context);
+                },
+                leading: const Icon(
+                  Icons.delete_rounded,
+                ),
+                title: const Text("delete note"),
+              ),
+              ListTile(
+                onTap: () {},
+                leading: const Icon(
+                  Icons.copy_rounded,
+                ),
+                title: const Text("copy note"),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const TagDialog();
+                      });
+                },
+                leading: const Icon(
+                  Icons.bookmark_rounded,
+                ),
+                title: const Text("add tag"),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const AddReminderDialog();
+                      });
+                },
+                leading: const Icon(
+                  Icons.notifications_rounded,
+                ),
+                title: const Text("add a reminder"),
+              )
+            ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: getColorWidgetList(),
-          ),
-          const SizedBox(height: 10.0),
-          ListTile(
-            onTap: () {
-              Navigator.of(context, rootNavigator: false).pop();
-              controller.deleteNote();
-              Navigator.pop(context);
-            },
-            leading: const Icon(
-              Icons.delete_rounded,
-            ),
-            title: const Text("delete note"),
-          ),
-          ListTile(
-            onTap: () {},
-            leading: const Icon(
-              Icons.copy_rounded,
-            ),
-            title: const Text("copy note"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context, rootNavigator: true).pop();
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return const TagDialog();
-                  });
-            },
-            leading: const Icon(
-              Icons.bookmark_rounded,
-            ),
-            title: const Text("add tag"),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context, rootNavigator: true).pop();
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return const AddReminderDialog();
-                  });
-            },
-            leading: const Icon(
-              Icons.notifications_rounded,
-            ),
-            title: const Text("add a reminder"),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

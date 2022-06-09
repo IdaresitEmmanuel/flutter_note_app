@@ -20,6 +20,7 @@ class _TagDialogState extends State<TagDialog> {
       backgroundColor: Colors.transparent,
       child: Obx(() {
         return Container(
+          constraints: const BoxConstraints(maxWidth: 500.0),
           padding: const EdgeInsets.symmetric(vertical: 10.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0), color: Colors.white),

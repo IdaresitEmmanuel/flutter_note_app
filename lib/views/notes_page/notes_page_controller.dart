@@ -12,16 +12,16 @@ class NotesPageController extends GetxController with StateMixin<List<Note>> {
 
   getNotesFromDB() {
     try {
-      change(null, status: RxStatus.loading());
-      NoteDBProvider.instance.getAllNotes().then((value) {
-        noteList = value;
-        change(noteList, status: RxStatus.success());
-      }, onError: (error) {
-        change(null, status: RxStatus.error(error.toString()));
-        printError(info: error.toString());
-      });
-      // noteList = Note.getExampleList();
-      // change(noteList, status: RxStatus.success());
+      // change(null, status: RxStatus.loading());
+      // NoteDBProvider.instance.getAllNotes().then((value) {
+      //   noteList = value;
+      //   change(noteList, status: RxStatus.success());
+      // }, onError: (error) {
+      //   change(null, status: RxStatus.error(error.toString()));
+      //   printError(info: error.toString());
+      // });
+      noteList = Note.getExampleList();
+      change(noteList, status: RxStatus.success());
     } catch (e) {
       change(null, status: RxStatus.error(e.toString()));
       printError(info: e.toString());
@@ -30,16 +30,16 @@ class NotesPageController extends GetxController with StateMixin<List<Note>> {
 
   refreshNotes() {
     try {
-      change(null, status: RxStatus.loading());
-      NoteDBProvider.instance.getAllNotes().then((value) {
-        noteList = value;
-        change(noteList, status: RxStatus.success());
-      }, onError: (error) {
-        change(null, status: RxStatus.error(error.toString()));
-        printError(info: error.toString());
-      });
-      // noteList = Note.getExampleList();
-      // change(noteList, status: RxStatus.success());
+      // change(null, status: RxStatus.loading());
+      // NoteDBProvider.instance.getAllNotes().then((value) {
+      //   noteList = value;
+      //   change(noteList, status: RxStatus.success());
+      // }, onError: (error) {
+      //   change(null, status: RxStatus.error(error.toString()));
+      //   printError(info: error.toString());
+      // });
+      noteList = Note.getExampleList();
+      change(noteList, status: RxStatus.success());
     } catch (e) {
       change(null, status: RxStatus.error(e.toString()));
       printError(info: e.toString());
