@@ -72,40 +72,58 @@ class _NotesPageState extends State<NotesPage> {
                   : const SearchBar()),
               Expanded(
                 child: stateController.obx((noteList) {
-                  return ListView.builder(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: AppDimentions.pageMargin),
-                      shrinkWrap: true,
-                      itemCount: noteList?.length,
-                      itemBuilder: (context, index) {
-                        return Obx(() {
-                          final note = stateController.noteList[index];
-                          return NoteItem(
-                            note: stateController.noteList[index],
-                            isActionMode: stateController.actionMode.value,
-                            stateController: stateController,
-                            onPress: () {
-                              if (stateController.actionMode.value) {
-                                note.isSelected.value = !note.isSelected.value;
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => EditNotePage(
-                                      note: note,
-                                      refresh: stateController.refreshNotes,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            onLongPress: () {
-                              note.isSelected.value = true;
-                              stateController.toggleActionMode();
-                            },
-                          );
-                        });
-                      });
+                  return noteList!.isEmpty
+                      ? Container(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                    "assets/images/history_is_empty.png",
+                                    height: 160),
+                                const SizedBox(height: 20.0),
+                                const Text(
+                                  "No Notes available, click the plus button to add a new note",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              ]),
+                        )
+                      : ListView.builder(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppDimentions.pageMargin),
+                          shrinkWrap: true,
+                          itemCount: noteList.length,
+                          itemBuilder: (context, index) {
+                            return Obx(() {
+                              final note = stateController.noteList[index];
+                              return NoteItem(
+                                note: stateController.noteList[index],
+                                isActionMode: stateController.actionMode.value,
+                                stateController: stateController,
+                                onPress: () {
+                                  if (stateController.actionMode.value) {
+                                    note.isSelected.value =
+                                        !note.isSelected.value;
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => EditNotePage(
+                                          note: note,
+                                          refresh: stateController.refreshNotes,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                onLongPress: () {
+                                  note.isSelected.value = true;
+                                  stateController.toggleActionMode();
+                                },
+                              );
+                            });
+                          });
                 }),
               )
             ]),

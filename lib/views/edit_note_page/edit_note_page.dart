@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:note_app/core/constants/enums.dart';
 import 'package:note_app/views/edit_note_page/edit_page_controller.dart';
 import 'package:note_app/core/helper_function.dart';
-import 'package:note_app/data/repositories/note.dart';
+import 'package:note_app/data/models/note.dart';
 import 'package:note_app/theme/colors.dart';
 import 'package:note_app/theme/dimensions.dart';
 import 'package:note_app/views/edit_note_page/widgets/options_bottom_sheet.dart';
@@ -24,13 +24,14 @@ class _EditNotePageState extends State<EditNotePage> {
   void initState() {
     if (widget.note != null) {
       controller.setNote(widget.note!);
+    } else {
+      controller.setNote(Note.empty());
     }
     super.initState();
   }
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
   }
 
@@ -131,9 +132,7 @@ class _EditNotePageState extends State<EditNotePage> {
                   ],
                 ),
               ),
-              Obx(() {
-                return getReminderWidget(controller.note.value);
-              }),
+              const EditReminderText(),
               Expanded(
                 child: NoteForm(
                     note: controller.note.value, controller: controller),
@@ -146,36 +145,55 @@ class _EditNotePageState extends State<EditNotePage> {
   }
 }
 
-Widget getReminderWidget(Note note) {
-  Color color = note.getReminderTextColor();
-  return note.reminderStatus == NoteReminder.none
-      ? const SizedBox()
-      : Container(
-          margin: EdgeInsets.symmetric(horizontal: AppDimentions.pageMargin),
-          child: Row(children: [
-            Icon(
-              Icons.notifications_active_rounded,
-              size: 14,
-              color: color,
-            ),
-            const SizedBox(width: 5.0),
-            Text(
-              note.getFormattedReminderDate(),
-              style: TextStyle(
-                fontSize: 10.0,
-                color: color,
-              ),
-            ),
-            const SizedBox(width: 5.0),
-            Text(
-              note.isReminderActive() ? "(Active)" : "(Expired)",
-              style: TextStyle(
-                fontSize: 10.0,
-                color: color,
-              ),
-            )
-          ]),
-        );
+class EditReminderText extends StatelessWidget {
+  const EditReminderText({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Stream<DateTime> timeStream =
+        Stream.periodic(const Duration(seconds: 1), (_) => DateTime.now());
+    return Obx(() {
+      Note note = Get.find<EditPageController>().note.value;
+      return note.reminderStatus == NoteReminder.none
+          ? const SizedBox()
+          : StreamBuilder<DateTime>(
+              stream: timeStream,
+              builder: (context, snapshot) {
+                // DateTime now = snapshot.data ?? DateTime.now();
+                Color color = Get.find<EditPageController>()
+                    .note
+                    .value
+                    .getReminderTextColor();
+                return Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppDimentions.pageMargin),
+                  child: Row(children: [
+                    Icon(
+                      Icons.notifications_active_rounded,
+                      size: 14,
+                      color: color,
+                    ),
+                    const SizedBox(width: 5.0),
+                    Text(
+                      note.getFormattedReminderDate(),
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: color,
+                      ),
+                    ),
+                    const SizedBox(width: 5.0),
+                    Text(
+                      note.isReminderActive() ? "(Active)" : "(Expired)",
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: color,
+                      ),
+                    )
+                  ]),
+                );
+              });
+    });
+  }
 }
 
 class NoteForm extends StatelessWidget {

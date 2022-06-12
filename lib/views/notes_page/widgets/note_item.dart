@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:note_app/core/constants/enums.dart';
 import 'package:note_app/views/notes_page/notes_page_controller.dart';
 import 'package:note_app/core/helper_function.dart';
-import 'package:note_app/data/repositories/note.dart';
+import 'package:note_app/data/models/note.dart';
 import 'package:note_app/views/notes_page/widgets/note_check_box.dart';
 
 import 'note_tag.dart';

@@ -17,7 +17,7 @@ class ReminderCalender extends StatefulWidget {
 class _ReminderCalenderState extends State<ReminderCalender> {
   late CalendarController calendarController;
   var editPageController = Get.find<EditPageController>();
-  final _firstDay = DateTime.now();
+  final _firstDay = Get.find<EditPageController>().note.value.date;
   final _lastDay = DateTime.now().add(const Duration(days: 3650));
   final _currentDay = DateTime.now();
   var _focusedDay = Get.find<EditPageController>().note.value.reminderDate;

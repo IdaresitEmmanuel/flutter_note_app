@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:note_app/core/date_time_extensions.dart';
@@ -57,8 +58,15 @@ class _AddReminderDialogState extends State<AddReminderDialog> {
                     ),
                     const SizedBox(width: 10.0),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (timeController.isValidated()) {
+                          bool isAllowed = await AwesomeNotifications()
+                              .isNotificationAllowed();
+                          if (!isAllowed) {
+                            bool hasPermission = await AwesomeNotifications()
+                                .requestPermissionToSendNotifications();
+                            if (!hasPermission) return;
+                          }
                           int year = dayController.getDay().year;
                           int month = dayController.getDay().month;
                           int day = dayController.getDay().day;

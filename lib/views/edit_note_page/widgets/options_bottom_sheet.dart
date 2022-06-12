@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
+import 'package:note_app/core/constants/enums.dart';
 import 'package:note_app/core/helper_function.dart';
 import 'package:note_app/views/edit_note_page/edit_page_controller.dart';
 import 'package:note_app/theme/colors.dart';
@@ -104,15 +105,57 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
               ListTile(
                 onTap: () {
                   Navigator.of(context, rootNavigator: true).pop();
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const AddReminderDialog();
-                      });
+                  if (controller.note.value.reminderStatus ==
+                      NoteReminder.none) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AddReminderDialog();
+                        });
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            child: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      onTap: () => Navigator.of(context,
+                                              rootNavigator: true)
+                                          .pop(),
+                                      leading: const Icon(
+                                        Icons.close_rounded,
+                                        color: Colors.red,
+                                      ),
+                                      title: const Text("Remove reminder"),
+                                    ),
+                                    ListTile(
+                                      onTap: () {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return const AddReminderDialog();
+                                            });
+                                      },
+                                      leading: const Icon(
+                                        Icons.edit_rounded,
+                                        color: Colors.green,
+                                      ),
+                                      title: const Text("Modify reminder"),
+                                    )
+                                  ],
+                                )),
+                          );
+                        });
+                  }
                 },
-                leading: const Icon(
-                  Icons.notifications_rounded,
-                ),
+                leading: const Icon(Icons.alarm),
                 title: const Text("add a reminder"),
               )
             ],

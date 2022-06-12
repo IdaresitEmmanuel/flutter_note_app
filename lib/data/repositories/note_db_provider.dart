@@ -1,4 +1,4 @@
-import 'package:note_app/data/repositories/note.dart';
+import 'package:note_app/data/models/note.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -17,14 +17,6 @@ class NoteDBProvider {
   // id  | title | date |  note  | color | tag
   //  ''      ''     ''      ''      ''     ''
   //  ''      ''     ''      ''      ''     ''
-
-  // final reminderTableName = "reminder_table";
-  // final noteIdColumn = "id";
-  // final reminderDateColumn = "date";
-
-  // reminder table
-  // note_id | date |
-  //    ''      ''
 
   static final NoteDBProvider instance = NoteDBProvider._instance();
   NoteDBProvider._instance();
@@ -46,10 +38,6 @@ class NoteDBProvider {
     await db.execute(
       'CREATE TABLE $noteTableName ($idColumn INTEGER PRIMARY KEY AUTOINCREMENT, $titleColumn TEXT, $dateColumn INTEGER, $noteColumn TEXT, $colorColumn TEXT, $tagColumn TEXT, $reminderDateColumn INTEGER, $reminderStatusColumn TEXT)',
     );
-
-    // await db.execute(
-    //   'CREATE TABLE $reminderTableName ($noteIdColumn INTEGER PRIMARY KEY, $reminderDateColumn INTEGER)',
-    // );
   }
 
   // note queries
@@ -91,31 +79,4 @@ class NoteDBProvider {
     final result = await db.delete(noteTableName);
     return result > 0 ? true : false;
   }
-
-  // reminder queries
-  // Future<Reminder> getReminder(int id) async {
-  //   Database db = await instance.db;
-  //   List<Map<String, dynamic>> result = await db.query(reminderTableName,
-  //       where: '$noteIdColumn = ?', whereArgs: [id], limit: 1);
-  //   return Reminder.fromMap(result[0]);
-  // }
-
-  // Future<bool> setReminder(Reminder reminder) async {
-  //   Database db = await instance.db;
-  //   final result = await db.insert(reminderTableName, reminder.toMap());
-  //   return result > 0 ? true : false;
-  // }
-
-  // Future<bool> updateReminder(Reminder reminder) async {
-  //   Database db = await instance.db;
-  //   final result = await db.update(reminderTableName, reminder.toMap());
-  //   return result > 0 ? true : false;
-  // }
-
-  // Future<bool> deleteReminder(int id) async {
-  //   Database db = await instance.db;
-  //   final result = await db
-  //       .delete(reminderTableName, where: '$noteIdColumn = ?', whereArgs: [id]);
-  //   return result > 0 ? true : false;
-  // }
 }

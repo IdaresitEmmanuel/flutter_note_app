@@ -1,7 +1,8 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:note_app/core/helper_function.dart';
-import 'package:note_app/data/repositories/note.dart';
+import 'package:note_app/data/models/note.dart';
 import 'package:note_app/data/repositories/note_db_provider.dart';
 
 import '../../core/constants/enums.dart';
@@ -32,9 +33,23 @@ class EditPageController extends GetxController {
     saveNote();
   }
 
-  setReminderDate(DateTime date) {
-    note.value.reminderDate = date;
+  removeReminderDate() {
+    note.value = note.value.copyWith(reminderStatus: NoteReminder.none);
     saveNote();
+  }
+
+  setReminderDate(DateTime date) {
+    note.value = note.value.copyWith(reminderDate: date);
+    note.value = note.value.copyWith(reminderStatus: NoteReminder.some);
+    saveNote();
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: note.value.id ?? DateTime.now().microsecond,
+        channelKey: NoteReminderChannel.reminderChannelKey.name,
+        title: "${Emojis.time_alarm_clock} SpeedNote Reminder",
+        body: note.value.note,
+      ),
+    );
   }
 
   Future<String> saveNote() async {

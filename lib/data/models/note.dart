@@ -118,7 +118,7 @@ class Note {
       note: map['note'] ?? '',
       color: NoteColor.values.byName(map['color']),
       tag: NoteTag.values.byName(map['tag']),
-      reminderDate: DateTime.fromMicrosecondsSinceEpoch(map['reminder_date']),
+      reminderDate: DateTime.fromMillisecondsSinceEpoch(map['reminder_date']),
       reminderStatus: NoteReminder.values.byName(map['reminder_status']),
     );
   }

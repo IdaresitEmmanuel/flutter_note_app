@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/views/notes_page/notes_page_controller.dart';
-import 'package:note_app/data/repositories/note.dart';
+import 'package:note_app/data/models/note.dart';
 import 'package:note_app/theme/dimensions.dart';
 import 'package:note_app/views/notes_page/widgets/delete_dialog.dart';
 
