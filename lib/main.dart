@@ -8,6 +8,7 @@ import 'package:note_app/views/core/app_widget.dart';
 import 'core/constants/enums.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   dependency.init();
   AwesomeNotifications().initialize(null, [
     NotificationChannel(

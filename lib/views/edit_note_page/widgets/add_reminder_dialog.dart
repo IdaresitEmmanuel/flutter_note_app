@@ -67,17 +67,15 @@ class _AddReminderDialogState extends State<AddReminderDialog> {
                                 .requestPermissionToSendNotifications();
                             if (!hasPermission) return;
                           }
-                          int year = dayController.getDay().year;
-                          int month = dayController.getDay().month;
-                          int day = dayController.getDay().day;
-                          int hour = timeController.getTime().hour;
-                          int minute = timeController.getTime().minute;
+
                           var reminderDate = DateTime.now().copyWith(
-                            year: year,
-                            month: month,
-                            day: day,
-                            hour: hour,
-                            minute: minute,
+                            year: dayController.getDay().year,
+                            month: dayController.getDay().month,
+                            day: dayController.getDay().day,
+                            hour: timeController.getTime().hour,
+                            minute: timeController.getTime().minute,
+                            second: 0,
+                            millisecond: 0,
                           );
                           Get.find<EditPageController>()
                               .setReminderDate(reminderDate);

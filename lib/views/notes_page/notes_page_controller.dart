@@ -2,46 +2,61 @@ import 'package:get/get.dart';
 import 'package:note_app/data/models/note.dart';
 import 'package:note_app/data/repositories/note_db_provider.dart';
 
-class NotesPageController extends GetxController with StateMixin<List<Note>> {
+class NotesPageController extends GetxController {
   RxBool actionMode = RxBool(false);
-  List<Note> noteList = [];
+  RxBool isNoteLoading = RxBool(false);
+  RxList<Note> noteList = RxList.empty(growable: true);
+  RxList<Note> filteredNoteList = RxList.empty(growable: true);
 
   NotesPageController() {
     getNotesFromDB();
   }
 
+  void _setNotes(List<Note> notes) {
+    noteList.addAll(notes);
+    filteredNoteList.addAll(noteList);
+  }
+
+  void filterNotes(String query) {
+    final tempQuery = query.trim();
+    filteredNoteList.clear();
+    if (tempQuery.isEmpty) {
+      filteredNoteList.addAll(noteList);
+      return;
+    }
+    for (var note in noteList) {
+      if (note.title.trim().toLowerCase().contains(tempQuery.toLowerCase())) {
+        filteredNoteList.add(note);
+      }
+    }
+  }
+
   getNotesFromDB() {
     try {
-      change(null, status: RxStatus.loading());
+      isNoteLoading.value = true;
       NoteDBProvider.instance.getAllNotes().then((value) {
-        noteList = value;
-        change(noteList, status: RxStatus.success());
+        _setNotes(value);
       }, onError: (error) {
-        change(null, status: RxStatus.error(error.toString()));
         printError(info: error.toString());
       });
       // noteList = Note.getExampleList();
       // change(noteList, status: RxStatus.success());
     } catch (e) {
-      change(null, status: RxStatus.error(e.toString()));
       printError(info: e.toString());
     }
+    isNoteLoading.value = true;
   }
 
   refreshNotes() {
     try {
-      change(null, status: RxStatus.loading());
       NoteDBProvider.instance.getAllNotes().then((value) {
-        noteList = value;
-        change(noteList, status: RxStatus.success());
+        _setNotes(value);
       }, onError: (error) {
-        change(null, status: RxStatus.error(error.toString()));
         printError(info: error.toString());
       });
       // noteList = Note.getExampleList();
       // change(noteList, status: RxStatus.success());
     } catch (e) {
-      change(null, status: RxStatus.error(e.toString()));
       printError(info: e.toString());
     }
   }
@@ -61,7 +76,7 @@ class NotesPageController extends GetxController with StateMixin<List<Note>> {
 
   List<Note> getSelectedNotes() {
     List<Note> tempList = [];
-    for (var note in noteList) {
+    for (var note in filteredNoteList) {
       if (note.isSelected.value) {
         tempList.add(note);
       }

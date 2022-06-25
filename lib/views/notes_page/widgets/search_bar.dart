@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:note_app/theme/colors.dart';
 import 'package:note_app/theme/dimensions.dart';
+import 'package:note_app/views/notes_page/notes_page_controller.dart';
 import 'package:note_app/views/notes_page/widgets/filter_dialog.dart';
 
 class SearchBar extends StatefulWidget {
@@ -37,6 +39,7 @@ class SearchBarState extends State<SearchBar> {
                       child: TextField(
                     controller: textEditingController,
                     onChanged: (value) {
+                      Get.find<NotesPageController>().filterNotes(value);
                       if (value.isNotEmpty) {
                         closeNotifier.value = true;
                       } else {
@@ -59,6 +62,8 @@ class SearchBarState extends State<SearchBar> {
                                   onTap: () {
                                     textEditingController.clear();
                                     closeNotifier.value = false;
+                                    Get.find<NotesPageController>()
+                                        .filterNotes("");
                                   },
                                   child: const Icon(Icons.close_rounded),
                                 ),

@@ -16,7 +16,7 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  final stateController = NotesPageController();
+  final stateController = Get.find<NotesPageController>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +26,8 @@ class _NotesPageState extends State<NotesPage> {
           floatingActionButton: Obx(() => stateController.actionMode.value
               ? const SizedBox.shrink()
               : FloatingActionButton(
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => EditNotePage(
-                              refresh: stateController.refreshNotes))),
+                  onPressed: () => Get.to(() => const EditNotePage(),
+                      transition: Transition.zoom),
                   child: const Icon(Icons.add),
                 )),
           body: SafeArea(
@@ -63,16 +60,15 @@ class _NotesPageState extends State<NotesPage> {
               Obx(() => stateController.actionMode.value
                   ? Obx(() {
                       return ActionBar(
-                        selectedList: stateController.noteList
+                        selectedList: stateController.filteredNoteList
                             .where((p0) => p0.isSelected.value)
                             .toList(),
-                        controller: stateController,
                       );
                     })
                   : const SearchBar()),
               Expanded(
-                child: stateController.obx((noteList) {
-                  return noteList!.isEmpty
+                child: Obx(() {
+                  return stateController.noteList.isEmpty
                       ? Container(
                           padding: const EdgeInsets.all(20.0),
                           child: Column(
@@ -93,12 +89,13 @@ class _NotesPageState extends State<NotesPage> {
                           padding: EdgeInsets.symmetric(
                               horizontal: AppDimentions.pageMargin),
                           shrinkWrap: true,
-                          itemCount: noteList.length,
+                          itemCount: stateController.filteredNoteList.length,
                           itemBuilder: (context, index) {
                             return Obx(() {
-                              final note = stateController.noteList[index];
+                              final note =
+                                  stateController.filteredNoteList[index];
                               return NoteItem(
-                                note: stateController.noteList[index],
+                                note: note,
                                 isActionMode: stateController.actionMode.value,
                                 stateController: stateController,
                                 onPress: () {
@@ -106,15 +103,8 @@ class _NotesPageState extends State<NotesPage> {
                                     note.isSelected.value =
                                         !note.isSelected.value;
                                   } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => EditNotePage(
-                                          note: note,
-                                          refresh: stateController.refreshNotes,
-                                        ),
-                                      ),
-                                    );
+                                    Get.to(() => EditNotePage(note: note),
+                                        transition: Transition.zoom);
                                   }
                                 },
                                 onLongPress: () {

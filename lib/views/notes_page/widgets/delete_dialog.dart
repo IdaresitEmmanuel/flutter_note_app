@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:note_app/views/notes_page/notes_page_controller.dart';
 import 'package:note_app/theme/dimensions.dart';
 
 class DeleteDialog extends StatelessWidget {
-  const DeleteDialog({Key? key, required this.controller}) : super(key: key);
-  final NotesPageController controller;
+  const DeleteDialog({Key? key}) : super(key: key);
+
   int getSelectedItems() {
-    var notes = controller.noteList;
+    var notes = Get.find<NotesPageController>().filteredNoteList;
     return notes.where((p0) => p0.isSelected.value).length;
   }
 
@@ -29,7 +30,7 @@ class DeleteDialog extends StatelessWidget {
                   child: const Text("Cancel")),
               TextButton(
                   onPressed: () {
-                    controller.deleteNotes();
+                    Get.find<NotesPageController>().deleteNotes();
                     Navigator.of(context, rootNavigator: true).pop();
                   },
                   child: const Text("Confirm"))

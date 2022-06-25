@@ -7,12 +7,11 @@ import 'package:note_app/data/models/note.dart';
 import 'package:note_app/theme/colors.dart';
 import 'package:note_app/theme/dimensions.dart';
 import 'package:note_app/views/edit_note_page/widgets/options_bottom_sheet.dart';
+import 'package:note_app/views/notes_page/notes_page_controller.dart';
 
 class EditNotePage extends StatefulWidget {
-  const EditNotePage({Key? key, this.note, required this.refresh})
-      : super(key: key);
+  const EditNotePage({Key? key, this.note}) : super(key: key);
   final Note? note;
-  final Function() refresh;
   @override
   State<EditNotePage> createState() => _EditNotePageState();
 }
@@ -39,7 +38,7 @@ class _EditNotePageState extends State<EditNotePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        widget.refresh();
+        Get.find<NotesPageController>().refreshNotes();
         return true;
       },
       child: GestureDetector(

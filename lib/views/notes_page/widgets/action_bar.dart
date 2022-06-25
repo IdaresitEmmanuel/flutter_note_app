@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:note_app/views/notes_page/notes_page_controller.dart';
 import 'package:note_app/data/models/note.dart';
 import 'package:note_app/theme/dimensions.dart';
 import 'package:note_app/views/notes_page/widgets/delete_dialog.dart';
 
 class ActionBar extends StatelessWidget {
-  const ActionBar(
-      {Key? key, required this.selectedList, required this.controller})
-      : super(key: key);
+  const ActionBar({Key? key, required this.selectedList}) : super(key: key);
   final List<Note> selectedList;
-  final NotesPageController controller;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,7 +30,7 @@ class ActionBar extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (context) {
-                      return DeleteDialog(controller: controller);
+                      return const DeleteDialog();
                     });
               },
               child: Image.asset("assets/images/delete.png", width: 24),

@@ -1,9 +1,9 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:note_app/core/helper_function.dart';
 import 'package:note_app/data/models/note.dart';
 import 'package:note_app/data/repositories/note_db_provider.dart';
+import 'package:note_app/services/notification_service.dart';
 
 import '../../core/constants/enums.dart';
 
@@ -42,13 +42,12 @@ class EditPageController extends GetxController {
     note.value = note.value.copyWith(reminderDate: date);
     note.value = note.value.copyWith(reminderStatus: NoteReminder.some);
     saveNote();
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: note.value.id ?? DateTime.now().microsecond,
-        channelKey: NoteReminderChannel.reminderChannelKey.name,
-        title: "${Emojis.time_alarm_clock} SpeedNote Reminder",
-        body: note.value.note,
-      ),
+    Get.find<NotificationService>().scheduleNotification(note.value);
+    Get.showSnackbar(
+      const GetSnackBar(
+          leftBarIndicatorColor: Colors.green,
+          duration: Duration(seconds: 3),
+          message: 'reminder has been set successfully!'),
     );
   }
 
