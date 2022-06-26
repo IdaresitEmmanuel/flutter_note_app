@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:note_app/core/constants/enums.dart';
@@ -6,6 +7,7 @@ import 'package:note_app/views/edit_note_page/edit_page_controller.dart';
 import 'package:note_app/theme/colors.dart';
 import 'package:note_app/views/edit_note_page/widgets/add_reminder_dialog.dart';
 import 'package:note_app/views/edit_note_page/widgets/tag_dialog.dart';
+import 'package:note_app/views/notes_page/notes_page_controller.dart';
 
 class OptionsBottomSheet extends StatefulWidget {
   const OptionsBottomSheet({Key? key}) : super(key: key);
@@ -75,17 +77,26 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
                   Navigator.of(context, rootNavigator: false).pop();
                   controller.deleteNote();
                   Navigator.pop(context);
+                  Get.find<NotesPageController>().refreshNotes();
+                  Get.showSnackbar(
+                      const GetSnackBar(message: 'Note successfully deleted!'));
                 },
-                leading: const Icon(
-                  Icons.delete_rounded,
-                ),
+                leading: const Icon(Icons.delete_rounded),
                 title: const Text("delete note"),
               ),
               ListTile(
-                onTap: () {},
-                leading: const Icon(
-                  Icons.copy_rounded,
-                ),
+                onTap: () {
+                  FlutterClipboard.copy(controller.note.value.title +
+                      "\n\n" +
+                      controller.note.value.note);
+                  Get.showSnackbar(const GetSnackBar(
+                    leftBarIndicatorColor: Colors.green,
+                    message: 'Note copied!',
+                    duration: Duration(seconds: 2),
+                  ));
+                  Navigator.pop(context);
+                },
+                leading: const Icon(Icons.copy_rounded),
                 title: const Text("copy note"),
               ),
               ListTile(
@@ -97,9 +108,7 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
                         return const TagDialog();
                       });
                 },
-                leading: const Icon(
-                  Icons.bookmark_rounded,
-                ),
+                leading: const Icon(Icons.bookmark_rounded),
                 title: const Text("add tag"),
               ),
               ListTile(

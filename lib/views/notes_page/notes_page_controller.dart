@@ -46,7 +46,7 @@ class NotesPageController extends GetxController {
     } catch (e) {
       printError(info: e.toString());
     }
-    isNoteLoading.value = true;
+    isNoteLoading.value = false;
   }
 
   refreshNotes() {

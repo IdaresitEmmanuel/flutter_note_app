@@ -26,8 +26,7 @@ class _NotesPageState extends State<NotesPage> {
           floatingActionButton: Obx(() => stateController.actionMode.value
               ? const SizedBox.shrink()
               : FloatingActionButton(
-                  onPressed: () => Get.to(() => const EditNotePage(),
-                      transition: Transition.zoom),
+                  onPressed: () => Get.to(() => const EditNotePage()),
                   child: const Icon(Icons.add),
                 )),
           body: SafeArea(
@@ -68,52 +67,57 @@ class _NotesPageState extends State<NotesPage> {
                   : const SearchBar()),
               Expanded(
                 child: Obx(() {
-                  return stateController.noteList.isEmpty
-                      ? Container(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                    "assets/images/history_is_empty.png",
-                                    height: 160),
-                                const SizedBox(height: 20.0),
-                                const Text(
-                                  "No Notes available, click the plus button to add a new note",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 16.0),
-                                ),
-                              ]),
+                  return stateController.isNoteLoading.value
+                      ? const Center(
+                          child: CircularProgressIndicator(),
                         )
-                      : ListView.builder(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppDimentions.pageMargin),
-                          shrinkWrap: true,
-                          itemCount: stateController.filteredNoteList.length,
-                          itemBuilder: (context, index) {
-                            return Obx(() {
-                              final note =
-                                  stateController.filteredNoteList[index];
-                              return NoteItem(
-                                note: note,
-                                isActionMode: stateController.actionMode.value,
-                                stateController: stateController,
-                                onPress: () {
-                                  if (stateController.actionMode.value) {
-                                    note.isSelected.value =
-                                        !note.isSelected.value;
-                                  } else {
-                                    Get.to(() => EditNotePage(note: note),
-                                        transition: Transition.zoom);
-                                  }
-                                },
-                                onLongPress: () {
-                                  note.isSelected.value = true;
-                                  stateController.toggleActionMode();
-                                },
-                              );
-                            });
-                          });
+                      : (stateController.noteList.isEmpty
+                          ? Container(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                        "assets/images/history_is_empty.png",
+                                        height: 160),
+                                    const SizedBox(height: 20.0),
+                                    const Text(
+                                      "No Notes available, click the plus button to add a new note",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
+                                  ]),
+                            )
+                          : ListView.builder(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: AppDimentions.pageMargin),
+                              shrinkWrap: true,
+                              itemCount:
+                                  stateController.filteredNoteList.length,
+                              itemBuilder: (context, index) {
+                                return Obx(() {
+                                  final note =
+                                      stateController.filteredNoteList[index];
+                                  return NoteItem(
+                                    note: note,
+                                    isActionMode:
+                                        stateController.actionMode.value,
+                                    stateController: stateController,
+                                    onPress: () {
+                                      if (stateController.actionMode.value) {
+                                        note.isSelected.value =
+                                            !note.isSelected.value;
+                                      } else {
+                                        Get.to(() => EditNotePage(note: note));
+                                      }
+                                    },
+                                    onLongPress: () {
+                                      note.isSelected.value = true;
+                                      stateController.toggleActionMode();
+                                    },
+                                  );
+                                });
+                              }));
                 }),
               )
             ]),
