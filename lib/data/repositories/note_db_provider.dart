@@ -1,3 +1,5 @@
+import 'package:note_app/core/constants/enums.dart';
+import 'package:note_app/data/local/app_preferences.dart';
 import 'package:note_app/data/models/note.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -44,7 +46,22 @@ class NoteDBProvider {
   Future<List<Note>> getAllNotes() async {
     Database db = await instance.db;
     List<Map<String, dynamic>> noteList = await db.query(noteTableName);
-    return noteList.map((map) => Note.fromMap(map)).toList();
+    return await sortList(noteList.map((map) => Note.fromMap(map)).toList());
+  }
+
+  Future<List<Note>> sortList(List<Note> noteList) async {
+    Filter filter = await AppPrefrences.getFilter();
+    switch (filter) {
+      case Filter.none:
+        break;
+      case Filter.alphabet:
+        noteList.sort((a, b) => a.title.compareTo(b.title));
+        break;
+      case Filter.date:
+        noteList.sort((a, b) => a.date.compareTo(b.date));
+        return noteList.reversed.toList();
+    }
+    return noteList;
   }
 
   Future<Note> getNote(int id) async {

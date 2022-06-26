@@ -13,6 +13,8 @@ class NotesPageController extends GetxController {
   }
 
   void _setNotes(List<Note> notes) {
+    noteList.clear();
+    filteredNoteList.clear();
     noteList.addAll(notes);
     filteredNoteList.addAll(noteList);
   }
